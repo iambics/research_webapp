@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "iambic-res"
+  },
+  "targets": {
+    "webapp-dev-662f0": {
+      "hosting": {
+        "prod": [
+          "iambic-res"
+        ],
+        "staging": [
+          "iambic-res",
+          "webapp-dev-662f0"
+        ]
+      }
+    }
+  }
+}
