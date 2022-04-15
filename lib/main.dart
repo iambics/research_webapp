@@ -12,6 +12,7 @@ import 'package:iambic_research/landing_page.dart';
 import 'package:iambic_research/Z3a-b.dart';
 import 'package:iambic_research/T4.dart';
 import 'package:iambic_research/Tutorial.dart';
+import 'package:iambic_research/video_player.dart';
 import 'dart:js' as js;
 import 'package:js/js.dart';
 //import 'package:microphone/microphone.dart';
@@ -20,8 +21,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 //import 'package:path/path.dart';
 //import 'dart:io';
 import '/foot_survey/S.dart';
+import '/videoweb.dart';
+import '/foot_survey/video_webcapture.dart';
+import 'package:camera/camera.dart';
 //void main() => runApp(const MaterialApp(home:Landing_page()));
-
+//List<CameraDescription> cameras;
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,7 @@ class MyApp extends StatelessWidget {
           // When navigating to the "/" route, build the FirstScreen widget.
           '/': (context) => Landing_page(),//Splash(),bubble_level(view:'Inner', side:'Right',angle:100)
           // When navigating to the "/second" route, build the SecondScreen widget.
-          //'/landing': (context) => Landing_page(),
+          //'/video': (context) => VideoWebo(),
           //'/mainlogin': (context) => MainLogin(),
           //'/T0A':(context) => T0A(),
           //'/T0B':(context) => T0B(),
@@ -74,7 +78,9 @@ class MyApp extends StatelessWidget {
 void main() async {
   await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  //cameras = await availableCameras();
+  //await FirebaseAuth.instance.signInAnonymously();
+  //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   //var  firebaseUser= FirebaseAuth.instance.currentUser;
   //if(firebaseUser.uid!=null)
      //_firebaseAuth.signOut();
@@ -83,6 +89,8 @@ void main() async {
     //UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
     //js.context.callMethod("getAccel");
     runApp(MyApp());
+    //runApp(VideoPlayerApp());
+
   });
 }
 

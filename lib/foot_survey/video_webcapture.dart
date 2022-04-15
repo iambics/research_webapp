@@ -33,14 +33,22 @@ import '/slide_transition.dart';
 import 'S.dart';
 import '/bubble_level.dart';
 import '/camera_webplugin.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:camera/camera.dart';
+//import 'dart:io';
+//import 'package:path_provider/path_provider.dart';
+//import '/videoweb.dart';
 
 StreamController streamController=StreamController<bool>.broadcast();
 //bool first_vidset=true;
-
+List<CameraDescription> cameras;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -57,7 +65,7 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: AspectRatio(
               aspectRatio: 1,
-              child:MyCamera('Right','Inner',false,false)),
+              child:CameraApp())//VideoCapture('1')),//MyCamera('Right','Inner',false,false)),
         ),
       ),
     );
@@ -184,7 +192,7 @@ class _blobUrlPlayerState extends State<blobUrlPlayer> {
     //controller.add(videoElement.paused);
 
     stream.listen((value) {
-      print('Value from controller: $value');
+      //print('Value from controller: $value');
       mySetState(value);
     });
 
@@ -198,6 +206,7 @@ class _blobUrlPlayerState extends State<blobUrlPlayer> {
         widget.source, (int viewId) => videoElement);
 
     widget.stream.listen((flag) {
+      print(flag);
       mySetState(flag);
     });
 
@@ -267,7 +276,7 @@ class _blobUrlPlayerState extends State<blobUrlPlayer> {
           if(!rescan) {
             Navigator.push(
               context,
-              SlideRoute(page: widget.side == 'Right' ? S4('Left',!rescan) : S1B(false),
+              SlideRoute(page: widget.side == 'Right' ?VideoWebCamera('Left','Left',rescan,false) : S1B(false),//V1E('Left',!rescan)
                   duration: 600,
                   direction: 'Left'),
             );
@@ -299,7 +308,7 @@ class _blobUrlPlayerState extends State<blobUrlPlayer> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    print('Value from controller: $isPlaying');
+    //print('Value from controller: $isPlaying');
     void _updateSize() {
       setState(() {
         _size = height-100;
@@ -454,7 +463,6 @@ class WebRecorder {
     if(WebRecorder.isNotRecording)
       stopRecording().whenComplete(whenRecorderStop);
     else
-
       window.navigator.mediaDevices.getUserMedia({'audio': false, 'video':
       {'facingMode': 'environment', 'width':1280,'height':720,'frameRate': { 'exact': 15 }}})
           .then((stream) {
@@ -664,6 +672,7 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
         whenRecorderStop: whenRecorderStop,
         whenReceiveData: receiveData
     );
+
     //window.screen.orientation.lock('portrait');
     super.initState();
     SystemChrome.setPreferredOrientations([
@@ -720,8 +729,6 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
     //SlideRoute(page: T2A(),duration: 600,direction: 'Left'),
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -736,8 +743,9 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
     //var myScreenOrientation = window.screen.orientation;
     //myScreenOrientation.lock("portrait");
     return Scaffold(body:
-    Stack(alignment: Alignment.center, children:[
-      !videoCaptured? Container(color:Colors.black,child:_camera): blobUrlPlayer(source: url,side: widget.side,data:dataBlob,stream: streamController.stream,first_vidset: true),/*FutureBuilder<bool>(
+     Stack(alignment: Alignment.center, children:[
+      //!videoCaptured?
+      Container(color:Colors.black,child:_camera),/*: blobUrlPlayer(source: url,side: widget.side,data:dataBlob,stream: streamController.stream,first_vidset: true),FutureBuilder<bool>(
         future: started(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.data == true) {
@@ -762,6 +770,7 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
       Container(alignment: Alignment.bottomCenter,child:
       !videoCaptured? Padding(padding:EdgeInsets.all(16),child:FlatButton(
           onPressed: () {
+
             webRecorder.openRecorder();
             setState(() {
 
@@ -781,7 +790,7 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
           disabledTextColor: Colors.black,
           padding: EdgeInsets.all(8.0),
           splashColor: Colors.transparent,
-        )):null,
+        )):blobUrlPlayer(source: url,side: widget.side,data:dataBlob,stream: streamController.stream,first_vidset: true),
       ),
       if(videoCaptured)
         Positioned(top:15,left:screenSize.width-90,child:IconButton(icon:Icon(Icons.help_outline,color: HexColor('#FFFFFF'),size: 30),
@@ -789,7 +798,7 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
             //Navigator.of(context).pop();S4(widget.side,widget.rflag)
             Navigator.push(
                 context,
-            SlideRoute(page: S4(widget.side,rescan),duration: 600,direction: 'Left'));
+            SlideRoute(page: V1E(widget.side,rescan),duration: 600,direction: 'Left'));
           },)),
       if(WebRecorder.isNotRecording)
         Positioned(top:25,child:Text('Video: '+ widget.side +' Foot', style: TextStyle(
@@ -799,7 +808,7 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
     )
     );
   }
-  receiveData(data){
+  receiveData(data) {
     // TODO Your logic to use this Uint8List data
     switchCameraOff();
     dataBlob=data;
@@ -827,7 +836,205 @@ class _VideoWebCameraState extends State<VideoWebCamera> {
     webRecorder.switchCameraOff();
     setState(() {
       isRecording=false;
+      //videoCaptured=true;
     });
+  }
+}
+
+class VideoCapture extends StatefulWidget{
+  String id;
+  VideoCapture( this.id);
+  @override
+  State<VideoCapture> createState() => _VideoCaptureState();
+}
+
+class _VideoCaptureState extends State<VideoCapture> {
+  final ImagePicker _picker = ImagePicker();
+  VideoPlayerController _controller;
+  bool isCaptured=false;
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+
+      appBar: AppBar(title: Text("Flutter Video Capture"),),
+      body: Column(
+        children: [
+          IconButton(
+            onPressed: () async{
+              final XFile file = await _picker.pickVideo(
+                  source: ImageSource.camera);
+              setState(() {
+                isCaptured=true;
+              });
+              _playVideo(file);
+              print("Video Path ${file.path}");
+            },
+            icon: Icon(Icons.video_call_rounded,color: Colors.red,size:50),
+          ),
+          Text("Capture Video",style: TextStyle(color:Colors.black),),
+          /*Container(
+              height: height,
+              child: _previewVideo()),*/
+          (isCaptured)?TextButton(
+            //width: 120,
+            child: Text(
+              "Submit Object",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+
+            } ,
+            //color: Color.fromRGBO(0, 179, 134, 1.0),
+          ):SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+  Widget _previewVideo() {
+
+    if (_controller == null) {
+      return const Text(
+        'You have not yet picked a video',
+        textAlign: TextAlign.center,
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: AspectRatioVideo(_controller),
+    );
+  }
+
+
+  Future<void> _playVideo(XFile file) async {
+    if (file != null && mounted) {
+      print("Loading Video");
+      await _disposeVideoController();
+      VideoPlayerController controller;
+      if (kIsWeb) {
+        controller = VideoPlayerController.network(file.path);
+      } else {
+      //controller = VideoPlayerController.file(File(file.path));
+      }
+      _controller = controller;
+      // In web, most browsers won't honor a programmatic call to .play
+      // if the video has a sound track (and is not muted).
+      // Mute the video so it auto-plays in web!
+      // This is not needed if the call to .play is the result of user
+      // interaction (clicking on a "play" button, for example).
+
+      //await controller.setVolume(volume);
+      await controller.initialize();
+      await controller.setLooping(true);
+      await controller.play();
+      setState(() {});
+    }
+    else
+    {
+      print("Loading Video error");
+    }
+  }
+  Future<void> _disposeVideoController() async {
+    /*  if (_toBeDisposed != null) {
+      await _toBeDisposed!.dispose();
+    }
+    _toBeDisposed = _controller;*/
+    if (_controller != null) {
+      await _controller.dispose();
+    }
+    _controller = null;
+  }
+}
+
+
+class AspectRatioVideo extends StatefulWidget {
+  AspectRatioVideo(this.controller);
+
+  final VideoPlayerController controller;
+
+  @override
+  AspectRatioVideoState createState() => AspectRatioVideoState();
+}
+
+class AspectRatioVideoState extends State<AspectRatioVideo> {
+  VideoPlayerController get controller => widget.controller;
+  bool initialized = false;
+
+  void _onVideoControllerUpdate() {
+    if (!mounted) {
+      return;
+    }
+    if (initialized != controller.value.initialized) {
+      initialized = controller.value.initialized;
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(_onVideoControllerUpdate);
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(_onVideoControllerUpdate);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (initialized) {
+      return Center(
+        child: AspectRatio(
+
+          aspectRatio: controller.value.aspectRatio,
+          child: VideoPlayer(controller),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+class CameraApp extends StatefulWidget {
+  @override
+  _CameraAppState createState() => _CameraAppState();
+}
+
+class _CameraAppState extends State<CameraApp> {
+  CameraController controller;
+
+
+  @override
+  void initState() {
+    super.initState();
+    controller = CameraController(cameras[0], ResolutionPreset.max);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!controller.value.isInitialized) {
+      return Container();
+    }
+    return MaterialApp(
+      home: CameraPreview(controller),
+    );
   }
 }
 

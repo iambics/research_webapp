@@ -9,7 +9,6 @@
           "iambic-res"
         ],
         "staging": [
-          "iambic-res",
           "webapp-dev-662f0"
         ]
       }

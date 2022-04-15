@@ -1,5 +1,6 @@
 import 'package:iambic_research/bubble_level.dart';
 import 'package:iambic_research/camera_webplugin.dart';
+import 'package:iambic_research/video_player.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'dart:async';
 import 'package:flutter/gestures.dart';
@@ -24,6 +25,8 @@ import 'video_webcapture.dart';
 import 'dart:html';
 import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '/videoweb.dart';
 
 bool trickyfit_checked=true;
 
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         //primarySwatch: ,
         unselectedWidgetColor: HexColor('#00CED3'), // <-- your color
       ),
-      home: S2A2(),
+      home: V1E("Left",true),
     );
   }
 }
@@ -259,10 +262,11 @@ class S1B extends StatelessWidget {
               textColor: Colors.black87,
               onPressed: () async{
                 firestoreInstance.collection("mail").doc(firebaseUser.uid).set({
-                  "to": "mike@iambic.co",
+                  "to": userEmail,//"mike@iambic.co",
+                  "bcc":['mike@iambic.co','frank@iambic.co'],
                   "message": {
-                    "subject": _firebaseAuth.currentUser.uid,
-                    "text": userEmail,
+                    "subject": 'Iambic: Research App Submission '+_firebaseAuth.currentUser.uid+' Received',//_firebaseAuth.currentUser.uid,
+                    "text": 'Greetings,\n\nWe have received your submission through the Iambic Research App! Next, we will be reviewing your submission to confirm completion and will get back to you once our review is complete.\n\nThank you for being part of the Iambic Research experience. If you have any questions, please contact us at iambisphere@iambic.co\n\nBest,\n\nTeam Iambic'//userEmail,
                   },
                 }).then((_) {
                   print("success!");
@@ -292,10 +296,11 @@ class S1B extends StatelessWidget {
                  textColor: Colors.black87,
                  onPressed: () async {
                    firestoreInstance.collection("mail").doc(firebaseUser.uid).set({
-                     "to": "mike@iambic.co",
+                     "to": userEmail,//"mike@iambic.co",
+                     "bcc":['mike@iambic.co','frank@iambic.co'],
                      "message": {
-                       "subject": _firebaseAuth.currentUser.uid,
-                       "text": userEmail,
+                       "subject": 'Iambic: Research App Submission '+_firebaseAuth.currentUser.uid+' Received',//_firebaseAuth.currentUser.uid,
+                       "text": 'Greetings,\n\nWe have received your submission through the Iambic Research App! Next, we will be reviewing your submission to confirm completion and will get back to you once our review is complete.\n\nThank you for being part of the Iambic Research experience. If you have any questions, please contact us at iambisphere@iambic.co\n\nBest,\n\nTeam Iambic'
                      },
                    }).then((_) {
                      print("success!");
@@ -624,7 +629,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         Navigator.push(
                           context,
                           //MaterialPageRoute(builder: (context) => T4D()),
-                          SlideRoute(page: S1C(),duration: 600,direction: 'Left'),
+                          SlideRoute(page: T2B(),duration: 600,direction: 'Left'),
                         );
                       }
                     },
@@ -3537,7 +3542,18 @@ class S1A0State extends State<S1A0> {
             onChanged: (val) => height_in = val,
           )),
         ])),
-        ])),
+        FlatButton(splashColor: Colors.transparent,highlightColor: Colors.transparent,
+            onPressed: () async{
+              Navigator.push(
+                context,
+                SlideRoute(page: T4A('Right'),duration: 600,direction: 'Left'),
+              );},
+            child: Container(padding: EdgeInsets.fromLTRB(16, 20, 8, 16), alignment:Alignment.bottomLeft,
+                child: Text('I’ve already taken the survey.',
+                    style: new TextStyle(decoration: TextDecoration.underline,fontFamily: 'Barlow',  fontWeight: FontWeight.w600, letterSpacing: 1.5, fontSize: 18.0, color: HexColor('#00CED3'))))
+        ),
+        ])
+      ),
 
         FlatButton(splashColor: Colors.transparent,highlightColor: Colors.transparent,
             onPressed: () async{
@@ -3903,7 +3919,7 @@ class S2F extends StatelessWidget {
               Navigator.push(
                 context,
                 //SlideRoute(page: T2B(),duration: 600,direction: 'Left'),
-                  SlideRoute(page: S1C(),duration: 600,direction: 'Left'),
+                  SlideRoute(page: T2B(),duration: 600,direction: 'Left'),
               );},
             child: Container(padding: EdgeInsets.fromLTRB(16, 16, 16, 16), alignment:Alignment.bottomRight,
                 child: Text('NEXT',
@@ -4262,7 +4278,7 @@ class S4D extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              stepnum=='1'? SlideRoute(page: S4D('$side','2'),duration: 600,direction: 'Left'):stepnum=='2'?SlideRoute(page: S4D('$side','3'),duration: 600,direction: 'Left'):SlideRoute(page: VideoWebCamera(side,side,false,false),duration: 600,direction: 'Left'),
+              stepnum=='1'? SlideRoute(page: S4D('$side','2'),duration: 600,direction: 'Left'):stepnum=='2'?SlideRoute(page: S4D('$side','3'),duration: 600,direction: 'Left'):SlideRoute(page: getSmartPhoneOrTablet()=='android'?VideoWeb(side,false):VideoWebCamera(side,side,false,false),duration: 600,direction: 'Left'),
             );},
           child: Container(padding: EdgeInsets.fromLTRB(0, 0, 8, 16), alignment:Alignment.bottomRight,
               child: Text('NEXT',
@@ -4274,6 +4290,234 @@ class S4D extends StatelessWidget {
   }
 }
 
+class V1E extends StatelessWidget {
+  final String side;
+  //final bool rescan;
+  final bool new_vidset;
+  V1E(this.side,this.new_vidset);
+
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return WillPopScope(
+      onWillPop: () async {
+
+        return false;
+      },
+      child:  Scaffold(backgroundColor: Colors.white,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Center(//Align(alignment: Alignment(-0.25, 0.5),
+                child: Text(
+                    "Video: $side Foot", style: TextStyle(fontSize: 24,color: HexColor('#222222')))),
+            backgroundColor: HexColor('#FFFFFF'),
+            //centerTitle: true,
+            /*leading: IconButton(
+                icon: Icon(Icons.arrow_back), color: HexColor('#222222'),
+                //onPressed:() => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(context)),*/
+            /*actions: <Widget>[
+              InkWell(
+                  onTap: () async{
+                    await _firebaseAuth.signOut();
+                    //await googleSignIn.signOut();
+                    Navigator.push(
+                      context, SlideRoute(page: Landing_page(),duration: 300,direction: 'Left'),
+                    );},
+                  child: Container(padding: EdgeInsets.fromLTRB(0,8,16,0),
+                      child: Image.asset('assets/images/icon_logout.png',width: 32, height: 32))),
+            ],*/
+          ),
+
+          body:
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            //VideoApp('assets/videos/T5A_T7B.mp4'),
+            Center(child:Container(height: height/3, child: UrlPlayer(source:'https://firebasestorage.googleapis.com/v0/b/webapp-dev-662f0.appspot.com/o/videoscan_instructions_v2.mp4?alt=media&token=4025a450-2034-4e12-9179-a25308d71d8e'))),
+            //Container(height: height/2.4,padding: EdgeInsets.all(16), child:VideoPlayerScreen(filepath:'gs://iambic-v1.appspot.com/Tutorial_videos/T5A_T7B.mp4')),
+            Container(padding:EdgeInsets.all(16),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: HexColor('#222222'),
+                        fontWeight: FontWeight.w400,
+                        height: 1.3,
+                        fontFamily: 'Barlow',
+                        fontSize: 16),
+                    children: <TextSpan>[
+                      TextSpan(text: "Scan your "),
+                      TextSpan(text: '$side foot '.toLowerCase(),
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, height: 1.5)),
+                      TextSpan(text: "as instructed in the video.\n\nAs you rotate around your foot:"),
+                    ],
+                  ),
+                )
+            ),
+            Container(padding:EdgeInsets.fromLTRB(32,0,32,8), child:Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '\u2022',
+                  style: TextStyle(
+                    fontSize: 16,
+                    height: 1.55,
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: Container(
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: HexColor('#222222'),
+                            fontWeight: FontWeight.w400,
+                            height: 1.3,
+                            fontFamily: 'Barlow',
+                            fontSize: 16),
+                        children: <TextSpan>[
+                          TextSpan(text: "Hold your device consistently"),
+                            TextSpan(text: ' 1 ft away from foot.',
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, height: 1.5)),
+                        ],
+                      ),
+                    )
+                  ),
+                ),
+            ])),
+           Container(padding:EdgeInsets.fromLTRB(32,0,32,8), child:Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '\u2022',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.55,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Expanded(
+                    child: Container(
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(color: HexColor('#222222'),
+                                fontWeight: FontWeight.w400,
+                                height: 1.3,
+                                fontFamily: 'Barlow',
+                                fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(text: "Keep "),
+                              TextSpan(text: ' entire foot ',
+                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, height: 1.5)),
+                              TextSpan(text: "within camera frame."),
+                            ],
+                          ),
+                        )
+                    ),
+                  ),
+                ])),
+          Container(padding:EdgeInsets.fromLTRB(32,0,32,8), child:Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '\u2022',
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.55,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Expanded(
+                    child: Container(
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(color: HexColor('#222222'),
+                                fontWeight: FontWeight.w400,
+                                height: 1.3,
+                                fontFamily: 'Barlow',
+                                fontSize: 16),
+                            children: <TextSpan>[
+                              TextSpan(text: "Keep foot"),
+                              TextSpan(text: ' still ',
+                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, height: 1.5)),
+                              TextSpan(text: "while recording."),
+                            ],
+                          ),
+                        )
+                    ),
+                  ),
+                ])),
+            TextButton(
+                onPressed: () {showModalBottomSheet<void>(
+                  context: context,
+                  barrierColor: Colors.transparent,
+                  builder: (BuildContext context) {
+                    return Container(
+                        height: height-40,
+                        decoration: BoxDecoration(
+                            color:Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 6,
+                                //offset: Offset(4, 8), // Shadow position
+                              ),
+                            ],
+                            borderRadius: new BorderRadius.only(
+                                topLeft:  const  Radius.circular(10.0),
+                                topRight: const  Radius.circular(10.0))),
+                        child:V1M(side));}
+                  ,isScrollControlled:true,);},
+                child: Container(padding:EdgeInsets.fromLTRB(40,0,32,8), child:Text('Additional Tips', style: new TextStyle(decoration: TextDecoration.underline,
+                    fontFamily: 'Barlow', fontSize: 16.0, fontWeight: FontWeight.w600, color: HexColor('#00CED3'))))
+            ),
+
+            /*Container(width: 360, padding: EdgeInsets.fromLTRB(32, 8, 0, 0), child:
+             RichText(
+              text: TextSpan(
+                style: TextStyle(color: HexColor('#222222'),
+                    fontWeight: FontWeight.w400,
+                    height: 0.5,
+                    fontFamily: 'Barlow',
+                    fontSize: 16),
+                children: <TextSpan>[
+                  TextSpan(text: "\n", style: TextStyle(color: HexColor('#BDBDBD'),letterSpacing: 0)),
+                  TextSpan(text: "• Tap",style: TextStyle(fontWeight: FontWeight.w600)),
+                  TextSpan(text: " anywhere to scan."),
+                ],
+              ),
+            )),*/
+            //SizedBox(height:16),
+            Expanded(child:Align(alignment: FractionalOffset.bottomRight,
+                child:
+                FlatButton(splashColor: Colors.transparent,highlightColor: Colors.transparent,
+                  onPressed: () {
+                    //_controller.dispose()
+                    //js.context.callMethod("getAccel");
+                    Navigator.push(context,MaterialPageRoute(builder: (context) =>  getSmartPhoneOrTablet()=='android'? VideoWeb(side,new_vidset):VideoWebCamera(side,side,new_vidset,new_vidset)));
+                    /*Navigator.push(
+                      context,
+                      //MaterialPageRoute(builder: (BuildContext context) => VideoWebo(side,false)),
+                      //SlideRoute(page: VideoWebCamera(side,side,new_vidset,false),duration: 600,direction: 'Left'),
+                      SlideRoute(page: VideoWeb(side,false),duration: 600,direction: 'Left'),
+                    );*/
+                  },
+                  child:Text("GOT IT", style: new TextStyle(letterSpacing: 1.5,
+                      fontSize: 16.0, color: HexColor('#00CED3'),fontWeight: FontWeight.w700)),
+                ))),
+          ]
+
+          )),
+
+    );
+    //);
+  }
+}
 
 class S4 extends StatefulWidget {
   final String side;
@@ -4462,7 +4706,7 @@ class _S4State extends State<S4> with SingleTickerProviderStateMixin {
                               borderRadius: new BorderRadius.only(
                                   topLeft:  const  Radius.circular(10.0),
                                   topRight: const  Radius.circular(10.0))),
-                          child:V1M());}
+                          child:V1M(widget.side));}
                     ,isScrollControlled:true,);
                 },
                 child: Container(alignment: Alignment.centerLeft,padding: EdgeInsets.fromLTRB(52, 16, 16, 0),
@@ -4642,7 +4886,7 @@ class _S4State extends State<S4> with SingleTickerProviderStateMixin {
                     context,
                     //MaterialPageRoute(builder: (context) => T5A('right')),
                     //SlideRoute(page: S4H(widget.side),duration: 600,direction: 'Left'),
-                    SlideRoute(page: VideoWebCamera(widget.side,widget.side,widget.new_vidset,false),duration: 600,direction: 'Left'),
+                    SlideRoute(page: getSmartPhoneOrTablet()=='android'?VideoWeb(widget.side,widget.new_vidset):VideoWebCamera(widget.side,widget.side,widget.new_vidset,widget.new_vidset),duration: 600,direction: 'Left'),
                   );
                 },
                 child:
@@ -4659,8 +4903,12 @@ class _S4State extends State<S4> with SingleTickerProviderStateMixin {
 }
 
 class V1M extends StatelessWidget {
+  final String side;
+  //final bool rescan;
+  V1M(this.side);
   @override
   Widget build(BuildContext context) {
+    String other_foot=side=='Left'?'right':'left';
     return Column(children: [
       InkWell(child:Container(alignment: Alignment.center, child:Column(children:[
         Icon(Icons.keyboard_arrow_down,color: HexColor('#828282'),),
@@ -4677,7 +4925,7 @@ class V1M extends StatelessWidget {
           height: 250,
           child: Image.asset('assets/images/T5AM.png', fit: BoxFit.fill)),*/
       Container(width: double.infinity, padding: EdgeInsets.fromLTRB(32, 16, 16, 0), child:
-      Text("When spreading your feet apart, stand so that your right foot is about 2 ft away from your left.\n\nKeep your weight on your right foot while recording.\n\nIf needed, you can hold onto a chair with your free hand for support.",
+      Text("Take a wide stance. When spreading your feet apart, stand so that your" + " $side".toLowerCase() + " foot is about 2 ft away from your $other_foot.\n\nKeep your weight on your" + " $side".toLowerCase() + "foot while recording.\n\nIf needed, you can hold onto a chair with your free hand for support.\n\nRotate your device around your foot at a constant speed in whichever direction is most comfortable.\n\nMaintain a steady distance with your whole foot within camera frame.\n\nKeep foot still!",
           style: TextStyle(color: HexColor('#222222'),
               fontWeight: FontWeight.w400,
               height: 1.5,
@@ -4814,7 +5062,7 @@ class S4H extends StatelessWidget {
               Navigator.push(
                 context,
                 //MaterialPageRoute(builder: (context) => S4D(side,'1')),
-                SlideRoute(page: VideoWebCamera(side,side,false,false),duration: 600,direction: 'Left'),
+                SlideRoute(page: getSmartPhoneOrTablet()=='android'?VideoWeb(side,false):VideoWebCamera(side,side,false,false),duration: 600,direction: 'Left'),
               );},
             child: Text('GOT IT', style: new TextStyle(fontSize: 17.0, color: HexColor('#00CED3')))))
         )

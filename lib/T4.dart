@@ -400,7 +400,7 @@ class T1 extends StatelessWidget {
                     Divider(color: HexColor('#E0E0E0')),
                     menuitem('Bare feet & ankles', 'Roll up clothing above your ankles', '(no socks!)', 'assets/images/icon_setup4_barefeet.png',height/170),
                     Divider(color: HexColor('#E0E0E0')),
-                    InkWell(onTap: () {showModalBottomSheet<void>(
+                    /*InkWell(onTap: () {showModalBottomSheet<void>(
                       context: context,
                       barrierColor: Colors.transparent,
                       builder: (BuildContext context) {
@@ -419,7 +419,7 @@ class T1 extends StatelessWidget {
                                     topLeft:  const  Radius.circular(0.0),
                                     topRight: const  Radius.circular(0.0))),
                             child:T1B('left',false,false));}
-                      ,isScrollControlled:true,);},child:menuitem('Portrait Mode', 'Lock for the best scan experience', '(instructions)', 'assets/images/Icon_Lock.png',height/170)),
+                      ,isScrollControlled:true,);},child:menuitem('Portrait Mode', 'Lock for the best scan experience', '(instructions)', 'assets/images/Icon_Lock.png',height/170)),*/
                     //menuitem('Pen', 'Ready to make its mark', '(no highlighters!)', 'assets/images/Icon_Pen.png',height/170),
                     //Divider(color: HexColor('#E0E0E0')),
                     //menuitem('Tape Measure', 'Flexible, not spring-loaded', '(in centimeters!)', 'assets/images/Icon_Tape.png',height/170),
@@ -431,7 +431,7 @@ class T1 extends StatelessWidget {
                 Navigator.push(
                   context,
                   //MaterialPageRoute(builder: (context) => T2A()),
-                  SlideRoute(page: T4A('Right'),duration: 300,direction: 'Left'),
+                  SlideRoute(page: T1B('Right',false,false),duration: 300,direction: 'Left'),
                 );},
               child: Text('GOT IT', style: new TextStyle(letterSpacing: 1.5, fontSize: 16.0, fontWeight: FontWeight.w700, color: HexColor('#00CED3'))))
           )
@@ -544,7 +544,7 @@ class T0A extends StatelessWidget {
                   Navigator.push(
                     context,
                     //MaterialPageRoute(builder: (context) => T0B()),
-                    SlideRoute(page: T0B(),duration: 300,direction: 'Left'),
+                    SlideRoute(page: T0C(),duration: 300,direction: 'Left'),
                   );
                 },
                 child: Padding(padding:EdgeInsets.only(bottom:8),child:Text('NEXT', style: new TextStyle(fontFamily: 'Barlow', letterSpacing: 1.5, fontWeight: FontWeight.w700,
@@ -558,6 +558,180 @@ class T0A extends StatelessWidget {
   }
 }
 
+class T0C extends StatefulWidget {
+  T0C({Key key}) : super(key: key);
+  @override
+  T0CState createState() => new T0CState();
+}
+class T0CState extends State<T0C> {
+
+  Map<String, bool> values = {
+    'I have read the information and agree to participate in this research.': false,
+    //'Gender non-conforming': false,
+    //'Gender variant': false,
+    // 'Intersex': false,
+    //'Sign me up for Iambisphere': false,
+  };
+
+  var tmpArray = [];
+  int count=0;
+  bool pass=false;
+
+  getCheckboxItems(){
+
+    values.forEach((key, value) {
+      if(value == true)
+      {
+        //tmpArray.add(key);
+        tmpArray.add(value);
+      }
+    });
+
+    // Printing all selected items on Terminal screen.
+    //return pass;
+
+    // Here you will get all your selected Checkbox items.
+
+    // Clear array after use.
+    tmpArray.clear();
+  }
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+
+    return WillPopScope(
+        onWillPop: () {
+          print('Backbutton pressed (device or appbar button), do whatever you want.');
+
+          //trigger leaving and use own data
+          Navigator.pop(context, false);
+
+          //we need to return a future
+          return Future.value(false);
+        },
+        child:Scaffold(backgroundColor: Colors.white,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Center(//Align(alignment: Alignment(-0.25, 0),
+                child: Text(
+                    "Iambic Research", style: TextStyle(fontWeight: FontWeight.w600,
+                    //fontStyle: FontStyle.italic,
+                    fontFamily: 'Barlow',
+                    fontSize: 24, color: HexColor('#222222')))),
+            backgroundColor: HexColor('#FFC40F'),
+            //centerTitle: true,
+            /*leading: IconButton(
+                icon: Icon(Icons.arrow_back), color: HexColor('#222222'),
+                //onPressed:() => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(context)),*/
+            /*actions: <Widget>[
+              InkWell(
+                  onTap: () async{
+                    await _firebaseAuth.signOut();
+                    //await googleSignIn.signOut();
+                    Navigator.push(
+                      context, SlideRoute(page: Landing_page(),duration: 300,direction: 'Left'),
+                    );},
+                  child: Container(padding: EdgeInsets.fromLTRB(0,8,16,0),
+                      child: Image.asset('assets/images/icon_logout.png',width: 32, height: 32))),
+            ],*/
+          ),
+
+          body:Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Center(child:Container(
+              padding: EdgeInsets.only(top:16),
+                width: 128,
+                height: 128,
+                child: Image.asset('assets/images/NSF_logo.png', fit: BoxFit.contain))),
+            Container(padding: EdgeInsets.fromLTRB(16,16,16,16),child: Text('We are proudly backed by the National Science Foundation. Please read the information sheet  in order to participate.'
+                ,style: new TextStyle(fontWeight: FontWeight.w400,fontFamily: 'Barlow',fontSize: 16.0, color: HexColor('#222222'),height:1.5))),
+            /*TextButton(
+                onPressed: () {
+                  // ignore: undefined_prefixed_name
+                  ui.platformViewRegistry.registerViewFactory(
+                      'sweepstakesrules',
+                          (int viewId) => IFrameElement()
+                        ..width = '640'
+                        ..height = '360'
+                        ..src = 'https://www.youtube.com/embed/iYDj8ySBWkA'
+                        ..style.border = 'none');
+
+                  showModalBottomSheet<void>(
+                  context: context,
+                  barrierColor: Colors.transparent,
+                  builder: (BuildContext context) {
+                    return Container(
+                        height: height-80,
+                        decoration: BoxDecoration(
+                            color:Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 6,
+                                //offset: Offset(4, 8), // Shadow position
+                              ),
+                            ],
+                            borderRadius: new BorderRadius.only(
+                                topLeft:  const  Radius.circular(10.0),
+                                topRight: const  Radius.circular(10.0))),
+                        child:null);}
+                  ,isScrollControlled:true,);},
+                child: Container(padding: EdgeInsets.fromLTRB(8, 0, 16, 16), child:Text('View Sweepstakes Rules', style: new TextStyle(decoration: TextDecoration.underline,
+                    fontSize: 16.0, color: HexColor('#00CED3'))))
+            ),*/
+            Container(padding: EdgeInsets.fromLTRB(16, 0, 16, 16), child:RichText(
+              text: TextSpan(
+                style: new TextStyle(fontFamily: 'Barlow', fontWeight: FontWeight.w600, decoration: TextDecoration.underline,
+                    fontSize: 16.0, color: HexColor('#00CED3')),
+                children: <TextSpan>[
+                  TextSpan(text: 'View Research Information', style: TextStyle(fontWeight:FontWeight.w500),recognizer: new TapGestureRecognizer()
+                    ..onTap = () { launch('https://iambic.co/policies/irb');}),
+                ],
+              ),
+            )),
+            Column(mainAxisSize: MainAxisSize.min, children: values.keys.map((String key) {
+              return SizedBox(
+                  height: 48.0,child: CheckboxListTile(
+                title: Text(key,style: TextStyle(color: HexColor('#222222'),
+                    fontWeight: FontWeight.w400,
+                    height:1.4,
+                    fontFamily: 'Barlow',
+                    fontSize: 16),),
+                value: values[key],
+                activeColor: HexColor('#00CED3'),
+                checkColor: Colors.white,
+                onChanged: (bool value) {
+                  setState(() {
+                    values[key] = value;
+                    pass=value;
+                    print(pass);
+                  });
+                },
+              ));
+            }).toList(),
+            ),
+            if(pass)
+              Expanded(child:Align(alignment: FractionalOffset.bottomRight, child:FlatButton(splashColor: Colors.transparent,highlightColor: Colors.transparent,
+                  onPressed: () async {
+                    //_controller.dispose();
+                    Navigator.push(
+                      context,
+                      //MaterialPageRoute(builder: (context) => T2B()),
+                      SlideRoute(page: T0B(),duration: 300,direction: 'Left'),
+                    );
+                  },
+                  child: Text('NEXT', style: new TextStyle(letterSpacing: 1.5, fontFamily: 'Barlow', fontWeight: FontWeight.w700,
+                      fontSize: 16.0, color: HexColor('#00CED3'))))
+              ))
+          ]
+          ),
+        )
+
+    );
+    //);
+  }
+}
 
 class T0B extends StatefulWidget {
   T0B({Key key}) : super(key: key);
@@ -695,7 +869,7 @@ class T0BState extends State<T0B> {
                 width: 152,
                 height: 100,
                 child: Image.asset('assets/images/T0B_Cinderella.png', fit: BoxFit.contain))),
-            Container(padding: EdgeInsets.fromLTRB(16,16,16,16),child: Text('We are making custom-fitted sneakers for 50 lucky participants. To enter, answer our survey questions and submit a set of scans through the Iambic Research App.'
+            Container(padding: EdgeInsets.fromLTRB(16,16,16,16),child: Text('We are making custom-fitted sneakers for 50 lucky participants. To enter, answer our survey questions and submit a set of scans through the Iambic Research App.\n\nSubmissions will be reviewed by our team for completion before your entry is counted.'
             ,style: new TextStyle(fontWeight: FontWeight.w400,fontFamily: 'Barlow',fontSize: 16.0, color: HexColor('#222222'),height:1.5))),
             /*TextButton(
                 onPressed: () {
@@ -2556,15 +2730,16 @@ class T1B extends StatelessWidget {
   T1B(this.side,this.rflag,this.lflag);
   @override
   Widget build(BuildContext context) {
-    return /*Scaffold(backgroundColor: Colors.white,
+    return Scaffold(backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
-          title: Align(alignment: Alignment(-0.25, 0.5),child:Text("Get Set Up",style: TextStyle(color:HexColor('#222222')),)),
+          title: Center(child:Text("Get Set Up",style: TextStyle(color:HexColor('#222222')),)),
           backgroundColor:HexColor('#A5E0E5'),
+          automaticallyImplyLeading: false,
           //centerTitle: true,
-          leading: IconButton(icon:Icon(Icons.arrow_back),color:HexColor('#222222'),
+          //leading: IconButton(icon:Icon(Icons.arrow_back),color:HexColor('#222222'),
               //onPressed:() => Navigator.pop(context, false),
-              onPressed:() => Navigator.pop(context)),
+              //onPressed:() => Navigator.pop(context)),
           /*actions: <Widget>[
             InkWell(
                 onTap: () async{
@@ -2578,23 +2753,23 @@ class T1B extends StatelessWidget {
           ],*/
         ),
         body:
-        Center(child:Container(width:double.infinity,child:*/
+        Center(child:Container(width:double.infinity,child:
         Column(mainAxisAlignment: MainAxisAlignment.start,crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-                /*Container(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                Container(
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                   width: double.infinity,
                   height:60,
                   color:HexColor('#A5E0E5') ,
                   child:
-                  Center(child:Text("Lock Your Screen",style:TextStyle(
+                  Text("Disable Auto-Rotate",style:TextStyle(
                       color: HexColor('#222222'),
                       //Colors.grey[800],
                       fontWeight: FontWeight.w600,
                       //fontStyle: FontStyle.italic,
                       fontFamily: 'Barlow',
-                      fontSize: 24)))),*/
-              InkWell(child:Container(alignment: Alignment.center, child:Column(children:[
+                      fontSize: 32))),
+              /*InkWell(child:Container(alignment: Alignment.center, child:Column(children:[
                 Icon(Icons.keyboard_arrow_down,color: HexColor('#828282'),),
                 Text("Close",style: TextStyle(color: HexColor('#828282'),
                     fontWeight: FontWeight.w600,
@@ -2602,10 +2777,10 @@ class T1B extends StatelessWidget {
                     fontFamily: 'Barlow',
                     fontSize: 16)),
               ])), onTap: () {Navigator.pop(context);},
-              ),
+              ),*/
               Container(
                   padding: EdgeInsets.fromLTRB(0,24,0,16),
-                  height: 68,
+                  height: 100,
                   child: getSmartPhoneOrTablet()=='android' ? Image.asset('assets/images/Icon_Rotate.png', fit: BoxFit.fill):Image.asset('assets/images/Icon_Lock.png', fit: BoxFit.fill)),
 
               Padding(padding:EdgeInsets.fromLTRB(34, 0, 34, 0),child:Text('Please lock your screen’s Portrait Mode.\n',style: TextStyle(fontFamily: 'Barlow', fontWeight: FontWeight.w400, fontSize: 16.0, color: HexColor('#222222')),textAlign: TextAlign.left)),
@@ -2694,7 +2869,7 @@ class T1B extends StatelessWidget {
                       TextSpan(text: "Step 2: Tap "),
                       TextSpan(text: 'the Portrait Orientation Lock icon (pictured above) to enable.\n\n',style:TextStyle(fontFamily: 'Barlow',fontWeight: FontWeight.w400, fontSize: 16.0, color: HexColor('#222222'))),
                       TextSpan(text: "*For iPhone SE, iPhone 8 and earlier models, swipe up from the bottom edge of the screen.", style:TextStyle(fontFamily: 'Barlow',fontWeight: FontWeight.w400, fontSize: 13.0, color: HexColor('#222222'))),
-                    ])))
+                    ]))),
               /*InkWell(
                   onTap: () {showModalBottomSheet<void>(
                     context: context,
@@ -2748,7 +2923,7 @@ class T1B extends StatelessWidget {
                           fontSize: 17,textStyle:TextStyle(decoration: TextDecoration.underline, color: HexColor('#00CED3'),letterSpacing: 0,height: 1.4))))
               ),*/
 
-              /*Expanded(child:Align(alignment: FractionalOffset.bottomRight,
+              Expanded(child:Align(alignment: FractionalOffset.bottomRight,
                   child:
                   FlatButton(splashColor: Colors.transparent,highlightColor: Colors.transparent,
                     onPressed: () {
@@ -2757,14 +2932,15 @@ class T1B extends StatelessWidget {
                       Navigator.push(
                         context,
                         //MaterialPageRoute(builder: (context) => bubble_level(view:'Top',side:'Right')),
-                        SlideRoute(page: T2B(),duration: 300,direction: 'Left'),
+                        SlideRoute(page: T4A('Right'),duration: 300,direction: 'Left'),
                       );
                     },
-                    child:Text("I'M READY", style: new TextStyle(letterSpacing: 1.5,
+                    child:Text("GOT IT", style: new TextStyle(letterSpacing: 1.5,
                         fontSize: 16.0, color: HexColor('#00CED3'),fontWeight: FontWeight.w600)),
-                  ))),*/
+                  ))),
               //SizedBox(height: 34),
             ]
+         )))
         );
 
     //);
@@ -2878,7 +3054,7 @@ class T1M2 extends StatelessWidget {
 
 void main() {
   runApp(MaterialApp(
-    home: T4A('Left')//Container(height: 200,padding: EdgeInsets.all(16), child:VideoApp('assets/videos/T5A_T7B.mp4')),
+    home: T1()//Container(height: 200,padding: EdgeInsets.all(16), child:VideoApp('assets/videos/T5A_T7B.mp4')),
 
   ));
 }

@@ -28,6 +28,7 @@ dependencies:
   firebase_auth:
   firebase_core:
   camera: #0.5.8+17
+  #camera_web:
   path_provider:
   clippy_flutter:
   firebase_storage:
@@ -48,7 +49,7 @@ dependencies:
   xfile:
   splashscreen:
   pin_code_fields: ^6.0.1
-  video_player: '>=0.10.11+1 <2.0.0'
+  video_player: #'>=0.10.11+1 <2.0.0'
   video_player_web:
   video_compress:
   flutter_email_sender:
@@ -60,7 +61,7 @@ dependencies:
   flutter_dash: ^0.0.1
   shared_preferences:
   #just_audio:
-
+  image_picker:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
@@ -68,6 +69,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   device_info_plus: ^3.2.2
   #webview_flutter: ^2.0.13
+  #camera_platform_interface:
 
 dev_dependencies:
   flutter_test:
@@ -152,6 +154,7 @@ flutter:
       - assets/images/icon_logout.png
       - assets/videos/iambic_scan_left.mp4
       - assets/videos/iambic_scan_right.mp4
+      - assets/videos/videoscan_instructions_v2.mp4
       - assets/images/V2I_V3B.png
       - assets/images/Empty_Circle.png
       - assets/images/Full_Circle.png
@@ -164,6 +167,7 @@ flutter:
       - assets/images/heel_alignment.png
       - assets/images/HeelAlignment.gif
       - assets/images/S1DM.png
+      - assets/images/NSF_logo.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -35,6 +35,7 @@ import 'dart:convert';
 import 'foot_survey/S.dart';
 import 'T4.dart';
 import 'Tutorial.dart';
+import 'VideoWeb.dart';
 import 'foot_survey/video_webcapture.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -650,7 +651,7 @@ class _UploadingImageToFirebaseStorageState
           Navigator.push(
             context,
             //MaterialPageRoute(builder: (context) => T5B()),
-            SlideRoute(page: rescan==false?T5B(widget.side,rescan):bubble_level(view: 'Inner', side: 'Right',angle: 100, rescan: true),duration:600,direction:'Left'),
+            SlideRoute(page: rescan==false?T5B(widget.side,false):bubble_level(view: 'Inner', side: 'Right',angle: 100, rescan: true),duration:600,direction:'Left'),
           );
           break;
         case 'Inner':
@@ -658,14 +659,14 @@ class _UploadingImageToFirebaseStorageState
           Navigator.push(
             context,
             //MaterialPageRoute(builder: (context) => T5C(widget.side)),
-            SlideRoute(page: rescan==false?T5C(widget.side,rescan):bubble_level(view: 'Outer', side: 'Right',angle: 70, rescan: true),duration:600,direction:'Left'),
+            SlideRoute(page: rescan==false?T5C(widget.side,false):bubble_level(view: 'Outer', side: 'Right',angle: 70, rescan: true),duration:600,direction:'Left'),
           );
           break;
         case 'Outer':
           Navigator.push(
             context,
             //MaterialPageRoute(builder: (context) => T5D(widget.side)),
-            SlideRoute(page: rescan==false?T5A('Left',rescan):VideoWebCamera('Right',widget.side,true,false),duration:600,direction:'Left'),
+            SlideRoute(page: rescan==false?T5A('Left',false):V1E('Right',true),duration:600,direction:'Left'),
           );
           break;
         case 'Outline':
@@ -683,21 +684,22 @@ class _UploadingImageToFirebaseStorageState
           Navigator.push(
             context,
             //MaterialPageRoute(builder: (context) => T7C()),
-            SlideRoute(page: rescan==false?T5B(widget.side,rescan):bubble_level(view: 'Inner', side: 'Left',angle:100, rescan: true),duration:600,direction:'Left'),
+            SlideRoute(page: rescan==false?T5B(widget.side,false):bubble_level(view: 'Inner', side: 'Left',angle:100, rescan: true),duration:600,direction:'Left'),
           );
           break;
         case 'Inner':
           Navigator.push(
             context,
             //MaterialPageRoute(builder: (context) => T7D()),
-            SlideRoute(page: rescan==false?T5C(widget.side,rescan):bubble_level(view: 'Outer', side: 'Left',angle:70, rescan: true),duration:600,direction:'Left'),
+            SlideRoute(page: rescan==false?T5C(widget.side,false):bubble_level(view: 'Outer', side: 'Left',angle:70, rescan: true),duration:600,direction:'Left'),
           );
           break;
         case 'Outer':
           Navigator.push(
             context,
+              MaterialPageRoute(builder: (context) =>  rescan==false?V1E('Right',false):V1E('Left',true))
             //MaterialPageRoute(builder: (context) => T5D('Left')),
-            SlideRoute(page: rescan==false?S4('Right',rescan):VideoWebCamera('Left',widget.side,true,false),duration:600,direction:'Left'),
+            //SlideRoute(page: rescan==false?V1E('Right',false):VideoWeb('Left',true),duration:600,direction:'Left'),
           );
           break;
         case 'Outline':
@@ -789,13 +791,13 @@ class _UploadingImageToFirebaseStorageState
             Navigator.push(
               context,
               //MaterialPageRoute(builder: (context) => T5B()),
-              SlideRoute(page: rescan==false?T5A('Left',rescan):VideoWebCamera('Right',widget.side,true,false),duration: 600,direction: 'Left'),
+              SlideRoute(page: rescan==false?T5A('Left',rescan):V1E('Right',true),duration: 600,direction: 'Left'),
             );
           if(widget.side=='Left' && widget.view=='Outer')
             Navigator.push(
               context,
               //MaterialPageRoute(builder: (context) => T5B()),
-              SlideRoute(page: S4('Right',rescan),duration: 600,direction: 'Left'),
+              SlideRoute(page: V1E('Right',rescan),duration: 600,direction: 'Left'),
             );
           //Navigator.pushNamed(context, '/onboardMarket');
         },

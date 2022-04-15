@@ -838,8 +838,8 @@ class _LoginPageState extends State<LoginPage> {
                   autocorrect: false,
                   validator: (val) =>
                   val.isEmpty
-                      ? 'Email can\'t be empty.'
-                      : validateStructure(val) ? null:'Email format is incorrect.',
+                      ? 'Email can\'t be empty.':null,
+                      //: validateStructure(val) ? null:'Email format is incorrect.',
                   onSaved: (val) => _email = val,
                 )),
             /*padded(child: new TextFormField(
@@ -909,7 +909,7 @@ class _LoginPageState extends State<LoginPage> {
                   //: null,
               //onSaved: (val) => _password = val,
            // )),
-            GestureDetector(
+            /*GestureDetector(
                 onTap: () {
                   FocusScopeNode currentFocus = FocusScope.of(context);
 
@@ -917,7 +917,7 @@ class _LoginPageState extends State<LoginPage> {
                     currentFocus.unfocus();
                   }
                 },
-                child:
+                child:*/
             Column(mainAxisSize: MainAxisSize.min, children: values.keys.map((String key) {
                 return SizedBox(
                     height: 40.0,child: CheckboxListTile(
@@ -932,34 +932,40 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ));
               }).toList(),
-            )),
+            ),
             SizedBox(height:10),
             !isLoading ? padded(child:PrimaryButton(
                 key: new Key('login'),
                 text: "LET'S BEGIN",
                 height: 48.0,
                 onPressed: () async{
+
                               if(validateAndSave()) {
                                 setState(() => isLoading = true);
-                                await FirebaseAuth.instance.signInAnonymously();
+                                //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+                                await _firebaseAuth.signInAnonymously();
+                                //await FirebaseAuth.instance.signInAnonymously();
                                 //UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
-                                var firebaseUser = FirebaseAuth.instance.currentUser;
+                                //final firebaseUser = FirebaseAuth.instance.currentUser;
+                                //final firebaseUser = _firebaseAuth.currentUser;
                                 //FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
-                                final firestoreInstance = FirebaseFirestore.instance;
+                                //final firestoreInstance = FirebaseFirestore.instance;
+                                FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
                                 userEmail=_email;
                                 final Map<String, dynamic> tempMap =values;
                                 tempMap.removeWhere((String key, dynamic value)=> value==false);
-                                firestoreInstance.collection("userdata").doc(firebaseUser.uid)
-                                    .set({"newsletter": tempMap,"email":_email,"Device_data":_deviceData}).then((_) {
+                                await firestoreInstance.collection("userdata").doc(_firebaseAuth.currentUser.uid)
+                                    .set({"newsletter": tempMap,"email":_email}).then((_) {
                                   print("success!");
                                 });
-                                //FirebaseAuth.instance.signInAnonymously();
                                 Navigator.push(
                                   context,
                                   SlideRoute(page: S1A0(),
                                       duration: 600,
                                       direction: 'Left'),
                                 );
+                                //FirebaseAuth.instance.signInAnonymously();
+                                //userEmail=_email;
                                }
                               },
                )): Padding(padding:EdgeInsets.only(top:16),child:CircularProgressIndicator()),
